@@ -41,64 +41,29 @@ void AAuraPlayerController::CursorTrace()
      *      - Do nothing
      */
 
-    if (LastActor == nullptr)
-    {
-        if (ThisActor != nullptr)
-        {
-            // Case B
-            ThisActor->HighlightActor();
-        }
-        else
-        {
-            // Case A - both are null, do nothing
-        }
-    }
-    else // LastActor is valid
-    {
-        if (ThisActor == nullptr)
-        {
-            // Case C
-            LastActor->UnHighlightActor();
-        }
-        else // both actors are valid
-        {
-            if (LastActor != ThisActor)
-            {
-                // Case D
-                LastActor->UnHighlightActor();
-                ThisActor->HighlightActor();
-            }
-            else
-            {
-                // Case E - do nothing
-            }
-        }
-    }
-
-
     // CASE A and E - Both actors are the same, either null or valid - do nothing
-    // if (LastActor == ThisActor)
-    // {
-    //     return;
-    // }
-    // // CASE C
-    // if (LastActor && ThisActor == nullptr)
-    // {
-    //     LastActor->UnHighlightActor();
-    //     return;
-    // }
-    // // CASE B
-    // if (LastActor == nullptr && ThisActor)
-    // {
-    //     ThisActor->HighlightActor();
-    //     return;
-    // }
-    // // CASE D
-    // if (LastActor != ThisActor)
-    // {
-    //     LastActor->UnHighlightActor();
-    //     ThisActor->HighlightActor();
-    // }
+    if (LastActor == ThisActor)
+    {
+        return;
+    }
+    // CASE C
+    if (LastActor && ThisActor == nullptr)
+    {
+        LastActor->UnHighlightActor();
+        return;
+    }
+    // CASE B
+    if (LastActor == nullptr && ThisActor)
+    {
+        ThisActor->HighlightActor();
+        return;
+    }
+    // CASE D
+    if (LastActor != ThisActor)
+    {
+        LastActor->UnHighlightActor();
+        ThisActor->HighlightActor();
+    }
 }
 
 void AAuraPlayerController::BeginPlay()
