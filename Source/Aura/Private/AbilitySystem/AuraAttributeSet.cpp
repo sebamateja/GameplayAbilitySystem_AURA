@@ -5,7 +5,7 @@
 UAuraAttributeSet::UAuraAttributeSet()
 {
     // Constructor is to early to call the setter
-    InitHealth(100.0f);
+    InitHealth(50.0f);
     InitMaxHealth(100.0f);
     InitMana(50.0f);
     InitMaxMana(50.0f);
