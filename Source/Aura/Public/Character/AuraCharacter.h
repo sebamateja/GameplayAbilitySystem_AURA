@@ -26,5 +26,5 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<USpringArmComponent> SpringArm;
 
-	void InitAbilityActorInfo();
+	virtual void InitAbilityActorInfo() override;
 };
