@@ -101,11 +101,16 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
     FEffectProperties Props;
     SetEffectProperties(Data, Props);
 
-    // if (Data.EvaluatedData.Attribute == GetHealthAttribute())
-    // {
-    //     UE_LOG(LogTemp, Warning, TEXT("Health from GetHealth(): %f"), GetHealth());
-    //     UE_LOG(LogTemp, Warning, TEXT("Magnitude: %f"), Data.EvaluatedData.Magnitude);
-    // }
+    if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+    {
+        // UE_LOG(LogTemp, Warning, TEXT("Health from GetHealth(): %f"), GetHealth());
+        // UE_LOG(LogTemp, Warning, TEXT("Magnitude: %f"), Data.EvaluatedData.Magnitude);
+        SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+    }
+    if (Data.EvaluatedData.Attribute == GetManaAttribute())
+    {
+        SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+    }
 }
 
 void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
