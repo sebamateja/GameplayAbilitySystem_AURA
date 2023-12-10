@@ -18,7 +18,19 @@ public:
 	virtual void UnHighlightActor() override;
 	/** end Enemy Interface*/
 
+	/** Combat Interface*/
+	virtual int32 GetPlayerLevel() override;
+	/** end Combat Interface*/
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+
+	// Level for enemies is not replicated because we are only going to be concerned
+	// with checking the level on the server for AI controlled enemies. And that is
+	// because important things that will require that level in calculations will only 
+	// be done on the server
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int32 Level = 1;
+
 };
