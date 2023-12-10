@@ -11,9 +11,7 @@ UAuraAttributeSet::UAuraAttributeSet()
 {
     // Constructor is to early to call the setter
     InitHealth(10.0f);
-    InitMaxHealth(100.0f);
-    InitMana(40.0f);
-    InitMaxMana(100.0f);
+    InitMana(10.0f);
 }
 
 // Used to register variables to be replicated
