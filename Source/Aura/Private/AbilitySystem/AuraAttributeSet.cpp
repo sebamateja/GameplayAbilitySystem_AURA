@@ -10,8 +10,6 @@
 UAuraAttributeSet::UAuraAttributeSet()
 {
     // Constructor is to early to call the setter
-    InitHealth(10.0f);
-    InitMana(10.0f);
 }
 
 // Used to register variables to be replicated
