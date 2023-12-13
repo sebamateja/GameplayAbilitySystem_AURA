@@ -1,0 +1,23 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+
+/**
+ * AuraGameplayTags
+ * 
+ * Singleton containing native Gameplay Tags
+ * native meaning that they are created from within cpp and available in cpp
+ * also available in blueprint and editor
+ */
+
+struct FAuraGameplayTags
+{
+public:
+	static const FAuraGameplayTags& Get() { return GameplayTags; }
+	static void InitializeNativeGameplayTags();
+protected:
+
+private:
+	static FAuraGameplayTags GameplayTags;
+};
