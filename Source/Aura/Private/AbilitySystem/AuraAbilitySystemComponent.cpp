@@ -19,3 +19,13 @@ void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* Ability
     
     EffectAssetTags.Broadcast(TagContainer);
 }
+
+void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
+{
+    for (TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
+    {
+        FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1.0);
+        // GiveAbility(AbilitySpec); // tu AbilitySpec może być const
+        GiveAbilityAndActivateOnce(AbilitySpec); // tu AbilitySpec nie może być const
+    }
+}
