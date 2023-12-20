@@ -12,14 +12,12 @@
 AAuraPlayerController::AAuraPlayerController()
 {
     bReplicates = true;
-
     Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
 {
     Super::PlayerTick(DeltaTime);
-
     CursorTrace();
     AutoRun();
 }
@@ -43,50 +41,16 @@ void AAuraPlayerController::AutoRun()
 
 void AAuraPlayerController::CursorTrace()
 {
-    FHitResult CursorHit;
     GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
     if (!CursorHit.bBlockingHit) return;
 
     LastActor = ThisActor;
     ThisActor = Cast<ITargetInterface>(CursorHit.GetActor());
 
-    /**
-     * Line trace from cursor. There are several scenarios:
-     * A. LastActor is null && ThisActor is null
-     *      - Do nothing
-     * B. LastActor is null && ThisActor is valid
-     *      - Highlight ThisActor
-     * C. LastActor is valid && ThisActor is null
-     *      - UnHighlight LastActor
-     * D. Both actors are valid, but LastActor != ThisActor
-     *      - UnHighlight LastActor
-     *      - Highlight ThisActor
-     * E. Both actors are valid, and are the same actor
-     *      - Do nothing
-     */
-
-    // CASE A and E - Both actors are the same, either null or valid - do nothing
-    if (LastActor == ThisActor)
-    {
-        return;
-    }
-    // CASE C
-    if (LastActor && ThisActor == nullptr)
-    {
-        LastActor->UnHighlightActor();
-        return;
-    }
-    // CASE B
-    if (LastActor == nullptr && ThisActor)
-    {
-        ThisActor->HighlightActor();
-        return;
-    }
-    // CASE D
     if (LastActor != ThisActor)
     {
-        LastActor->UnHighlightActor();
-        ThisActor->HighlightActor();
+        if (LastActor) LastActor->UnHighlightActor();
+        if (ThisActor) ThisActor->HighlightActor();
     }
 }
 
@@ -152,10 +116,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
     if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
     {
-        if (GetASC())
-        {
-            GetASC()->AbilityInputTagReleased(InputTag);
-        }
+        if (GetASC()) GetASC()->AbilityInputTagReleased(InputTag);
         return;
     }
     // we are holding LMB and targeting
@@ -165,7 +126,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
     }
     else
     {
-        APawn* ControlledPawn = GetPawn();
+        const APawn* ControlledPawn = GetPawn();
         // We want to find a path to spline
         // Case when we are auto running on release
         if (FollowTime <= ShortPressThreshold && ControlledPawn)
@@ -178,7 +139,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
                 for (const FVector& PointLoc : NavPath->PathPoints)
                 {
                     Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
-                    DrawDebugSphere(GetWorld(), PointLoc, 8.0f, 8, FColor::Green, false, 5.0f);
+                    // DrawDebugSphere(GetWorld(), PointLoc, 8.0f, 8, FColor::Green, false, 5.0f);
                 }
                 if (NavPath->PathPoints.Num() > 0)
                 {
@@ -196,10 +157,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
     if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
     {
-        if (GetASC())
-        {
-            GetASC()->AbilityInputTagHeld(InputTag);
-        }
+        if (GetASC()) GetASC()->AbilityInputTagHeld(InputTag);
         return;
     }
     // we are holding LMB and targeting
@@ -211,10 +169,9 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
     {
         FollowTime += GetWorld()->GetDeltaSeconds();
 
-        FHitResult Hit;
-        if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+        if (CursorHit.bBlockingHit)
         {
-            CachedDestination = Hit.ImpactPoint; // Location can also be used
+            CachedDestination = CursorHit.ImpactPoint; // Location can also be used
         }
 
         if (APawn* ControlledPawn = GetPawn())

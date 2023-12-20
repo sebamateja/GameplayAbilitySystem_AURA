@@ -40,6 +40,7 @@ private:
 	void CursorTrace();
 	ITargetInterface* LastActor;
 	ITargetInterface* ThisActor;
+	FHitResult CursorHit;
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
