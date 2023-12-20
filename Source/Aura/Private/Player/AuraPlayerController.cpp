@@ -1,13 +1,17 @@
 #include "Player/AuraPlayerController.h"
 
 #include "Interaction/TargetInterface.h"
-
 #include "Input/AuraInputComponent.h"
+#include "AuraGameplayTags.h"
+
 #include "EnhancedInputSubsystems.h"
+#include "Components/SplineComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
     bReplicates = true;
+
+    Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -117,7 +121,11 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-    // GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Red, *InputTag.ToString());
+    if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+    {
+        bTargeting = ThisActor ? true : false;
+        bAutoRunning = false;
+    }
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
@@ -128,8 +136,38 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
-    if (GetASC() == nullptr) return;
-    GetASC()->AbilityInputTagHeld(InputTag);
+    if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+    {
+        if (GetASC())
+        {
+            GetASC()->AbilityInputTagHeld(InputTag);
+        }
+        return;
+    }
+    // we are holding LMB and targeting
+    if (bTargeting && GetASC())
+    {
+        if (GetASC())
+		{
+			GetASC()->AbilityInputTagHeld(InputTag);
+		}
+    }
+    else // we are holding LMB and triggering Click to Move behavior
+    {
+        FollowTime += GetWorld()->GetDeltaSeconds();
+
+        FHitResult Hit;
+        if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+        {
+            CachedDestination = Hit.ImpactPoint; // Location can also be used
+        }
+
+        if (APawn* ControlledPawn = GetPawn())
+        {
+            const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+            ControlledPawn->AddMovementInput(WorldDirection);
+        }
+    }
 }
 
 UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
