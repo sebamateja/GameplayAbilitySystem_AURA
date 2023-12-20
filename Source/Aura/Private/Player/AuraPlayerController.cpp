@@ -21,6 +21,24 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
     Super::PlayerTick(DeltaTime);
 
     CursorTrace();
+    AutoRun();
+}
+
+void AAuraPlayerController::AutoRun()
+{
+    if (!bAutoRunning) { return; }
+    if (APawn* ControlledPawn = GetPawn())
+    {
+        const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(ControlledPawn->GetActorLocation(), ESplineCoordinateSpace::World);
+        const FVector Direction = Spline->FindDirectionClosestToWorldLocation(LocationOnSpline, ESplineCoordinateSpace::World);
+        ControlledPawn->AddMovementInput(Direction);
+
+        const float DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
+        if (DistanceToDestination <= AutoRunAcceptanceRadius)
+        {
+            bAutoRunning = false;
+        }
+    }
 }
 
 void AAuraPlayerController::CursorTrace()
@@ -152,6 +170,8 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
         // Case when we are auto running on release
         if (FollowTime <= ShortPressThreshold && ControlledPawn)
         {
+            // We need to check the option in ProjectSettings->NavigationSystem->Allow Client Side Navigation
+            // Without this that function generating path will not work on client.
             if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
             {
                 Spline->ClearSplinePoints();
@@ -160,7 +180,11 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
                     Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
                     DrawDebugSphere(GetWorld(), PointLoc, 8.0f, 8, FColor::Green, false, 5.0f);
                 }
-                bAutoRunning = true;
+                if (NavPath->PathPoints.Num() > 0)
+                {
+                    CachedDestination = NavPath->PathPoints.Last();
+                    bAutoRunning = true;
+                }
             }
         }
         FollowTime = 0.0f;
