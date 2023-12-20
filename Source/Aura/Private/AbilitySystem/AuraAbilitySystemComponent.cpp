@@ -22,10 +22,51 @@ void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* Ability
 
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
 {
-    for (TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
+    // FGameplayAbilitySpec has TagContainer specifically for using it in runtime
+    // to change InputTags
+    for (const TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
     {
         FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1.0);
-        // GiveAbility(AbilitySpec); // tu AbilitySpec może być const
-        GiveAbilityAndActivateOnce(AbilitySpec); // tu AbilitySpec nie może być const
+        if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+        {
+            AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
+            GiveAbility(AbilitySpec); // tu AbilitySpec może być const
+        }
+        //GiveAbilityAndActivateOnce(AbilitySpec); // tu AbilitySpec nie może być const
+    }
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
+{
+    if (!InputTag.IsValid()) return;
+
+    for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+    {
+        if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+        {
+            AbilitySpecInputPressed(AbilitySpec);
+            if (!AbilitySpec.IsActive())
+            {
+                TryActivateAbility(AbilitySpec.Handle);
+            }
+        }
+    }
+}
+
+// In released case we do not always want to stop the activated ability
+// in most of the cases we just want to say to the ability that it is not pressed
+// anymore
+// In Ability itself we can override method InputPressed and InputReleased to
+// do whatever we need in case of those events
+void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
+{
+    if (!InputTag.IsValid()) return;
+
+    for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+    {
+        if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+        {
+            AbilitySpecInputReleased(AbilitySpec);
+        }
     }
 }
