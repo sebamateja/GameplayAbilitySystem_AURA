@@ -4,6 +4,8 @@
 #include "Input/AuraInputComponent.h"
 #include "AuraGameplayTags.h"
 
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/SplineComponent.h"
 
@@ -130,8 +132,40 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-    if (GetASC() == nullptr) return;
-    GetASC()->AbilityInputTagReleased(InputTag);
+    if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
+    {
+        if (GetASC())
+        {
+            GetASC()->AbilityInputTagReleased(InputTag);
+        }
+        return;
+    }
+    // we are holding LMB and targeting
+    if (bTargeting && GetASC())
+    {
+        GetASC()->AbilityInputTagReleased(InputTag);
+    }
+    else
+    {
+        APawn* ControlledPawn = GetPawn();
+        // We want to find a path to spline
+        // Case when we are auto running on release
+        if (FollowTime <= ShortPressThreshold && ControlledPawn)
+        {
+            if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
+            {
+                Spline->ClearSplinePoints();
+                for (const FVector& PointLoc : NavPath->PathPoints)
+                {
+                    Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
+                    DrawDebugSphere(GetWorld(), PointLoc, 8.0f, 8, FColor::Green, false, 5.0f);
+                }
+                bAutoRunning = true;
+            }
+        }
+        FollowTime = 0.0f;
+        bTargeting = false;
+    }
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
@@ -147,10 +181,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
     // we are holding LMB and targeting
     if (bTargeting && GetASC())
     {
-        if (GetASC())
-		{
-			GetASC()->AbilityInputTagHeld(InputTag);
-		}
+        GetASC()->AbilityInputTagHeld(InputTag);
     }
     else // we are holding LMB and triggering Click to Move behavior
     {
