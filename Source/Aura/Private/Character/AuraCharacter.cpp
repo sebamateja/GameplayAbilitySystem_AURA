@@ -27,7 +27,7 @@ AAuraCharacter::AAuraCharacter()
 
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(GetCapsuleComponent());
-    SpringArm->TargetArmLength = 750.0f;
+    SpringArm->TargetArmLength = 800.0f;
     SpringArm->bUsePawnControlRotation = false;
 
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
