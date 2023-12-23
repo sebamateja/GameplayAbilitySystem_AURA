@@ -6,12 +6,15 @@
 void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
 
+void UAuraProjectileSpell::SpawnProjectile()
+{
     // We want to spawn projectile on server. In this case the server will be in charge of moving it,
     // handling its location. And the clients will just see a replicated version of the projectile.
     // So we need to set bReplicates=true in AuraProjectile.cpp
-
-    const bool bIsServer = HasAuthority(&ActivationInfo);
+    
+    const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority(); //HasAuthority(&ActivationInfo);
     if (!bIsServer) return;
 
     ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
