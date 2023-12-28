@@ -8,7 +8,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UAuraProjectileSpell::SpawnProjectile()
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
 {
     // We want to spawn projectile on server. In this case the server will be in charge of moving it,
     // handling its location. And the clients will just see a replicated version of the projectile.
@@ -22,9 +22,12 @@ void UAuraProjectileSpell::SpawnProjectile()
     {
         const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
         
+        FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+        Rotation.Pitch = 0.0f;
+
         FTransform SpawnTransform;
         SpawnTransform.SetLocation(SocketLocation);
-        // TODO: Set the Projectile Rotation
+        SpawnTransform.SetRotation(Rotation.Quaternion());
 
         AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
             ProjectileClass, 

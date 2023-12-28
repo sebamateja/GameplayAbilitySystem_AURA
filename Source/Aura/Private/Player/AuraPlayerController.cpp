@@ -81,6 +81,8 @@ void AAuraPlayerController::SetupInputComponent()
 
     UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
     AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
     AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
@@ -119,12 +121,11 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
         if (GetASC()) GetASC()->AbilityInputTagReleased(InputTag);
         return;
     }
+    
+    if (GetASC()) GetASC()->AbilityInputTagReleased(InputTag);
+
     // we are holding LMB and targeting
-    if (bTargeting && GetASC())
-    {
-        GetASC()->AbilityInputTagReleased(InputTag);
-    }
-    else
+    if (!bTargeting && !bShiftKeyDown)
     {
         const APawn* ControlledPawn = GetPawn();
         // We want to find a path to spline
@@ -161,9 +162,9 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
         return;
     }
     // we are holding LMB and targeting
-    if (bTargeting && GetASC())
+    if (bTargeting || bShiftKeyDown)
     {
-        GetASC()->AbilityInputTagHeld(InputTag);
+        if (GetASC()) GetASC()->AbilityInputTagHeld(InputTag);
     }
     else // we are holding LMB and triggering Click to Move behavior
     {
