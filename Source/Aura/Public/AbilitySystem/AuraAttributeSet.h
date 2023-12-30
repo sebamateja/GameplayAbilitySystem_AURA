@@ -157,6 +157,15 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
 
 
+	/**
+	 * META ATTRIBUTES
+	 * - IncomingDamage
+	 */
+	// Meta attributes does not need to be replicated. We set them on the server, and on server we process data
+	// and then change any replicated attributes based on those calculations
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;

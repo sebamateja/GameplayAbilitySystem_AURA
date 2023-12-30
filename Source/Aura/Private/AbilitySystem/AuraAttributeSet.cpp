@@ -91,6 +91,39 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
     }
 }
 
+// It is executed after a GameplayEffect changes an attribute
+void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+    Super::PostGameplayEffectExecute(Data);
+
+    FEffectProperties Props;
+    SetEffectProperties(Data, Props);
+
+    if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+    {
+        // UE_LOG(LogTemp, Warning, TEXT("Health from GetHealth(): %f"), GetHealth());
+        // UE_LOG(LogTemp, Warning, TEXT("Magnitude: %f"), Data.EvaluatedData.Magnitude);
+        SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+        UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
+    }
+    if (Data.EvaluatedData.Attribute == GetManaAttribute())
+    {
+        SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+    }
+    if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+    {
+        const float LocalIncomingDamage = GetIncomingDamage();
+        SetIncomingDamage(0.0f);
+        if (LocalIncomingDamage > 0.0f)
+        {
+            const float NewHealth = GetHealth() - LocalIncomingDamage;
+            SetHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+
+            const bool bFatal = NewHealth <= 0.0f;
+        }
+    }
+}
+
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
     // Source = causer of the effect, Target = target of the effect (owner of this AS)
@@ -124,27 +157,6 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
         Props.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
         Props.TargetCharacter = Cast<ACharacter>(Props.TargetAvatarActor);
         Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
-    }
-}
-
-// It is executed after a GameplayEffect changes an attribute
-void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
-{
-    Super::PostGameplayEffectExecute(Data);
-
-    FEffectProperties Props;
-    SetEffectProperties(Data, Props);
-
-    if (Data.EvaluatedData.Attribute == GetHealthAttribute())
-    {
-        // UE_LOG(LogTemp, Warning, TEXT("Health from GetHealth(): %f"), GetHealth());
-        // UE_LOG(LogTemp, Warning, TEXT("Magnitude: %f"), Data.EvaluatedData.Magnitude);
-        SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-        UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
-    }
-    if (Data.EvaluatedData.Attribute == GetManaAttribute())
-    {
-        SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
     }
 }
 
