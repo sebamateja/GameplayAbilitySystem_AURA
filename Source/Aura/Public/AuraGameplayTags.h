@@ -44,6 +44,8 @@ public:
 
 	FGameplayTag Event_Montage_FireBolt;
 
+	FGameplayTag Effects_HitReact;
+
 private:
 	static FAuraGameplayTags GameplayTags;
 };

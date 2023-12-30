@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "UI/Widget/AuraUserWidget.h"
+#include "AuraGameplayTags.h"
 #include "Aura/Aura.h"
 
 #include "Components/WidgetComponent.h"
@@ -24,6 +25,7 @@ AAuraEnemy::AAuraEnemy()
 void AAuraEnemy::BeginPlay()
 {
     Super::BeginPlay();
+    GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 
     InitAbilityActorInfo();
 
@@ -43,6 +45,10 @@ void AAuraEnemy::BeginPlay()
             [this](const FOnAttributeChangeData& Data){
                 OnMaxHealthChanged.Broadcast(Data.NewValue);
             }
+        );
+        AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
+            this,
+            &AAuraEnemy::HitReactTagChanged
         );
 
         // Broadcasting initial values
@@ -82,4 +88,10 @@ void AAuraEnemy::InitAbilityActorInfo()
 void AAuraEnemy::InitializeDefaultAttributes() const
 {
     UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+}
+
+void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+    bHitReacting = NewCount > 0;
+    GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
 }
