@@ -27,4 +27,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) //means that we dont have to mark this as virtual
 	UAnimMontage* GetHitReactMontage();
+
+	virtual void Die() = 0;
 };
