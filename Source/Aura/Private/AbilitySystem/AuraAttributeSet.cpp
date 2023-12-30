@@ -120,6 +120,13 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
             SetHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
 
             const bool bFatal = NewHealth <= 0.0f;
+            if (!bFatal)
+            {
+                // We can specify a tag or a set of tags and say activate an ability if you have an ability with a specific tag
+                FGameplayTagContainer TagContainer;
+                TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+                Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+            }
         }
     }
 }
