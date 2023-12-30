@@ -1,12 +1,12 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 
-#include "GameFramework/Character.h"
-
 #include "AuraGameplayTags.h"
 #include "AbilitySystemBlueprintLibrary.h"
-#include "GameplayEffectExtension.h"
 
 #include "Net/UnrealNetwork.h"
+#include "GameplayEffectExtension.h"
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -92,6 +92,7 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 }
 
 // It is executed after a GameplayEffect changes an attribute
+// Happens only on the server
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
     Super::PostGameplayEffectExecute(Data);
@@ -135,6 +136,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
                 TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
                 Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
             }
+
+            ShowFloatingText(Props, LocalIncomingDamage);
         }
     }
 }
@@ -172,6 +175,19 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
         Props.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
         Props.TargetCharacter = Cast<ACharacter>(Props.TargetAvatarActor);
         Props.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Props.TargetAvatarActor);
+    }
+}
+
+// if not self damage
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage) const
+{
+    if (Props.SourceCharacter != Props.TargetCharacter)
+    {
+        //it gives locally controlled PlayerController
+        if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
+        {
+            AuraPC->ShowDamageNumber(Damage, Props.TargetCharacter);
+        }
     }
 }
 

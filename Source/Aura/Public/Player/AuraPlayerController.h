@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -14,6 +12,7 @@ class ITargetInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;
+class UDamageTextComponent;
 
 UCLASS()
 class AURA_API AAuraPlayerController : public APlayerController
@@ -23,6 +22,9 @@ class AURA_API AAuraPlayerController : public APlayerController
 public:
 	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
+
+	UFUNCTION(Client, Reliable)
+	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
 
 protected:
 	virtual void BeginPlay() override;
@@ -61,9 +63,7 @@ private:
 
 	UAuraAbilitySystemComponent* GetASC();
 
-	/**
-	 * Click to Move properties
-	 */
+	/* Click to Move properties */
 	FVector CachedDestination = FVector::ZeroVector;
 	float FollowTime = 0.0f;
 	float ShortPressThreshold = 0.5f;
@@ -77,4 +77,10 @@ private:
 	TObjectPtr<USplineComponent> Spline;
 
 	void AutoRun();
+	/* Click to Move properties end */
+
+
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 };

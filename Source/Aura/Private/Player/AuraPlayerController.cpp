@@ -3,11 +3,13 @@
 #include "Interaction/TargetInterface.h"
 #include "Input/AuraInputComponent.h"
 #include "AuraGameplayTags.h"
+#include "UI/Widget/DamageTextComponent.h"
 
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/SplineComponent.h"
+#include "GameFramework/Character.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -180,6 +182,21 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
             const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
             ControlledPawn->AddMovementInput(WorldDirection);
         }
+    }
+}
+
+// We can call this RPC on server and it will be executed on the server
+// but for client controlled character, it will be called on the server 
+// but executed on the client and the client will see it
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+    if (IsValid(TargetCharacter) && DamageTextComponentClass)
+    {
+        UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+        DamageText->RegisterComponent();
+        DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+        DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+        DamageText->SetDamageText(DamageAmount);
     }
 }
 
