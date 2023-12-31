@@ -4,6 +4,8 @@
 
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 struct AuraDamageStatics
 {
@@ -42,8 +44,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
     const UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
     const UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 
-    const AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
-    const AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+    AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
+    AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+    ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
+    ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
 
     const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
@@ -84,9 +88,17 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
     ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorPenetrationDef, EvaluationParameters, SourceArmorPenetration);
     SourceArmorPenetration = FMath::Max<float>(SourceArmorPenetration, 0.0f);
 
+    const UCharacterClassInfo* CharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
+
+    const FRealCurve* ArmorPenetrationCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(FName("ArmorPenetration"), FString());
+    const float ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourceCombatInterface->GetPlayerLevel());
+
+    const FRealCurve* EffectiveArmorCurve = CharacterClassInfo->DamageCalculationCoefficients->FindCurve(FName("EffectiveArmor"), FString());
+    const float EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+
     // We might want to scale the SourceArmorPenetration value here for example based on attacker and defender difference in levels
-    const float EffectiveArmor = TargetArmor *= (100 - SourceArmorPenetration * 0.25f) / 100.0f;
-    Damage *= (100 - EffectiveArmor) / 100.0f;
+    const float EffectiveArmor = TargetArmor * (100 - SourceArmorPenetration * ArmorPenetrationCoefficient) / 100.0f;
+    Damage *= (100 - EffectiveArmor * EffectiveArmorCoefficient) / 100.0f;
 
 
 
