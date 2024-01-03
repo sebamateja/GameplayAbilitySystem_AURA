@@ -2,6 +2,7 @@
 
 #include "AbilitySystemComponent.h"
 
+#include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
@@ -132,6 +133,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
     const bool bCriticalHit = FMath::RandRange(1, 100) < EffectiveCriticalHitChance;
     Damage = bCriticalHit ? Damage * 2.0f + SourceCriticalHitDamage : Damage;
 
+
+    // Setting custom stuff in GameplayEffectContext
+    FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+    UAuraAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
+    UAuraAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
 
 
 
