@@ -188,7 +188,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 // We can call this RPC on server and it will be executed on the server
 // but for client controlled character, it will be called on the server 
 // but executed on the client and the client will see it
-void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
 {
     if (IsValid(TargetCharacter) && DamageTextComponentClass)
     {
@@ -196,7 +196,7 @@ void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
         DamageText->RegisterComponent();
         DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
         DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-        DamageText->SetDamageText(DamageAmount);
+        DamageText->SetDamageText(DamageAmount, bBlockedHit, bCriticalHit);
     }
 }
 

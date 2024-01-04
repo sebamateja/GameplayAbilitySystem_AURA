@@ -180,14 +180,14 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 }
 
 // if not self damage
-void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCritialHit) const
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
     if (Props.SourceCharacter != Props.TargetCharacter)
     {
         //it gives locally controlled PlayerController
         if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
         {
-            AuraPC->ShowDamageNumber(Damage, Props.TargetCharacter);
+            AuraPC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
         }
     }
 }
