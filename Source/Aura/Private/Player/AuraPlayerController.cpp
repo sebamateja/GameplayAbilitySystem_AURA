@@ -190,7 +190,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 // but executed on the client and the client will see it
 void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
 {
-    if (IsValid(TargetCharacter) && DamageTextComponentClass)
+    if (IsValid(TargetCharacter) && DamageTextComponentClass) // && IsLocalController()
     {
         UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
         DamageText->RegisterComponent();

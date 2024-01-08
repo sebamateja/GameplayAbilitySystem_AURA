@@ -192,12 +192,16 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 }
 
 // if not self damage
+// Called on the server - because we are calling this method in PostGameplayEffectExecute in condition
+// for incomingDamage which is a meta attribute that is not replicated
 void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
     if (Props.SourceCharacter != Props.TargetCharacter)
     {
-        //it gives locally controlled PlayerController
-        if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
+        //GameplayStatics::GetPlayerController - it gives locally controlled PlayerController, but we need to provide index
+        
+        // We are getting the controller to the player that dealth the damage
+        if (AAuraPlayerController* AuraPC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
         {
             AuraPC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
         }

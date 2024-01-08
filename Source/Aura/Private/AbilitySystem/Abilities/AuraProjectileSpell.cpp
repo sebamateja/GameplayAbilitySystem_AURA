@@ -27,7 +27,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
         const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
         
         FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-        Rotation.Pitch = 0.0f;
+        // Rotation.Pitch = 0.0f;
 
         FTransform SpawnTransform;
         SpawnTransform.SetLocation(SocketLocation);
@@ -60,7 +60,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
                 const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
                 // GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("FireBolt Damage: %f"), ScaledDamage));
                 // UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Damage, ScaledDamage);
-                 UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
+                UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
             }
 
             
