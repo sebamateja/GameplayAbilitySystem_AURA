@@ -105,23 +105,14 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
     // Get Damage Set by Caller Magnitude
     float Damage = 0.0f;
-    float FireResistanceValue = 0.0f;
-    float LightningResistanceValue = 0.0f;
-    float ArcaneResistanceValue = 0.0f;
-    float PhysicalResistanceValue = 0.0f;
-    ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().FireResistanceDef, EvaluationParameters, FireResistanceValue);
-    ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().LightningResistanceDef, EvaluationParameters, LightningResistanceValue);
-    ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArcaneResistanceDef, EvaluationParameters, ArcaneResistanceValue);
-    ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().PhysicalResistanceDef, EvaluationParameters, PhysicalResistanceValue);
-
     for (const TTuple<FGameplayTag, FGameplayTag>& Pair : FAuraGameplayTags::Get().DamageTypesToResistances)
     {
         const FGameplayTag DamageTypeTag = Pair.Key;
         const FGameplayTag ResistanceTag = Pair.Value;
 
-        checkf(DamageStatics().TagsToCaptureDefs.Contains(ResistanceTag), TEXT("TagsToCaptureDefs does not contain Tag: [%s] in ExecCals_Damage"), *ResistanceTag.ToString());
+        checkf(AuraDamageStatics().TagsToCaptureDefs.Contains(ResistanceTag), TEXT("TagsToCaptureDefs does not contain Tag: [%s] in ExecCals_Damage"), *ResistanceTag.ToString());
         
-        const FGameplayEffectAttributeCaptureDefinition CaptureDef = DamageStatics().TagsToCaptureDefs[ResistanceTag];
+        const FGameplayEffectAttributeCaptureDefinition CaptureDef = AuraDamageStatics().TagsToCaptureDefs[ResistanceTag];
         
         float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key);
 
