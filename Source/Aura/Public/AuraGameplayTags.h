@@ -53,6 +53,8 @@ public:
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
 
+	FGameplayTag Abilities_Attack;
+
 	FGameplayTag Event_Montage_FireBolt;
 
 	FGameplayTag Effects_HitReact;
