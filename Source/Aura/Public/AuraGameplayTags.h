@@ -56,6 +56,8 @@ public:
 	FGameplayTag Abilities_Attack;
 
 	FGameplayTag Event_Montage_FireBolt;
+	FGameplayTag Event_Montage_Attack_Melee;
+	FGameplayTag Event_Montage_Attack_Range;
 
 	FGameplayTag Effects_HitReact;
 

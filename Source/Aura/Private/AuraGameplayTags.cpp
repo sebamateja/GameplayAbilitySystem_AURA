@@ -100,6 +100,12 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Event_Montage_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Event.Montage.FireBolt"),
 		FString("Casting FireBolt from montage"));
+	GameplayTags.Event_Montage_Attack_Melee = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Event.Montage.Attack.Melee"),
+		FString("Melee Attack in Montage"));
+	GameplayTags.Event_Montage_Attack_Range = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Event.Montage.Attack.Range"),
+		FString("Range Attack in Montage"));
 
 	/**
 	 * Damage and Damage Types
