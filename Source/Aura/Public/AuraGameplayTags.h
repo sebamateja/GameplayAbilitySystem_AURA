@@ -59,6 +59,10 @@ public:
 	FGameplayTag Event_Montage_Attack_Melee;
 	FGameplayTag Event_Montage_Attack_Range;
 
+	FGameplayTag Montage_Attack_Weapon;
+	FGameplayTag Montage_Attack_RightHand;
+	FGameplayTag Montage_Attack_LeftHand;
+
 	FGameplayTag Effects_HitReact;
 
 private:
