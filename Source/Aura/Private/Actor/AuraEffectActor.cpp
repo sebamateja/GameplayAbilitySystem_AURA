@@ -38,7 +38,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 
 	// Only if we should destroy and the effect actor is instant one
 	// For example, we do not want to destroy fire
-	if (!bIsInfinite)
+	if (!bIsInfinite && bDestroyOnEffectApplication)
 	{
 		Destroy();
 	}

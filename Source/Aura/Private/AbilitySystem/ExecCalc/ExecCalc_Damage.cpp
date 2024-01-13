@@ -114,7 +114,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
         
         const FGameplayEffectAttributeCaptureDefinition CaptureDef = AuraDamageStatics().TagsToCaptureDefs[ResistanceTag];
         
-        float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key);
+        float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key, false);
 
         float ResistanceValue = 0.0f;
         ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluationParameters, ResistanceValue);
@@ -124,6 +124,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
         Damage += DamageTypeValue;
     }
+
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Damage after resistances: %f"), Damage));
 
 
     // Capture BlockChance on Target, and determine if there was a successful Block
