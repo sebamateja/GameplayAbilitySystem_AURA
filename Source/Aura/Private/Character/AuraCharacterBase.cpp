@@ -77,6 +77,11 @@ AActor* AAuraCharacterBase::GetAvatar_Implementation()
 	return this;
 }
 
+TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation()
+{
+	return AttackMontages;
+}
+
 // It will only be called on the server
 void AAuraCharacterBase::Die()
 {
