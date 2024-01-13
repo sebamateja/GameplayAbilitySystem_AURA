@@ -1,6 +1,7 @@
 #include "AbilitySystem/Abilities/AuraDamageGameplayAbility.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 {
