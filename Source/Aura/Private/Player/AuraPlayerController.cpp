@@ -3,8 +3,10 @@
 #include "Interaction/TargetInterface.h"
 #include "Input/AuraInputComponent.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "UI/Widget/DamageTextComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "EnhancedInputSubsystems.h"
