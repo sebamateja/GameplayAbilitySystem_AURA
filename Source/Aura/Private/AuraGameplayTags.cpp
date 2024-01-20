@@ -172,8 +172,14 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/**
 	 * Abilities
 	 */
-	
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Attack"),
 		FString("Attack Ability Tag"));
+
+	/**
+	 * Cues
+	 */
+	GameplayTags.GameplayCue_MeleeImpact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.MeleeImpact"),
+		FString("GameplayCue for MeleeImpact"));
 }

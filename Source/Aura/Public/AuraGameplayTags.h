@@ -63,6 +63,8 @@ public:
 
 	FGameplayTag Effects_HitReact;
 
+	FGameplayTag GameplayCue_MeleeImpact;
+
 private:
 	static FAuraGameplayTags GameplayTags;
 };
