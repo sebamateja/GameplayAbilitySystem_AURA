@@ -4,6 +4,8 @@
 
 #include "Aura/Aura.h"
 
+#include "Kismet/GameplayStatics.h"
+
 AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -121,6 +123,11 @@ void AAuraCharacterBase::Die()
 // To handle stuff also on clients we have multicast
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
+	if (DeathSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
+	}
+
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
