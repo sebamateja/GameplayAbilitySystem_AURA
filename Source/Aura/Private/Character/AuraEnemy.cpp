@@ -7,9 +7,12 @@
 #include "AuraGameplayTags.h"
 #include "Aura/Aura.h"
 #include "AI/AuraAIController.h"
+
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+
+#include "GameFramework/CharacterMovementComponent.h" 
 #include "Components/WidgetComponent.h"
 
 AAuraEnemy::AAuraEnemy()

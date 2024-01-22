@@ -2,6 +2,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "AuraGameplayTags.h"
 #include "Aura/Aura.h"
 
 #include "Kismet/GameplayStatics.h"
