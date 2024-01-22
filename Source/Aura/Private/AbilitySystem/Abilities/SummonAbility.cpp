@@ -1,7 +1,5 @@
 #include "AbilitySystem/Abilities/SummonAbility.h"
 
-#include "Kismet/KismetSystemLibrary.h"
-
 TArray<FVector> USummonAbility::GetSpawnLocations()
 {
     const FVector Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
@@ -14,24 +12,22 @@ TArray<FVector> USummonAbility::GetSpawnLocations()
     for (int32 i = 0; i < NumberOfMinions; i++)
     {
         const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
-        const FVector ChosenSpawnLocation = Location + Direction * FMath::RandRange(MinSpawnDistance, MaxSpawnDistance);
+        FVector ChosenSpawnLocation = Location + Direction * FMath::RandRange(MinSpawnDistance, MaxSpawnDistance);
+
+        FHitResult Hit;
+        GetWorld()->LineTraceSingleByChannel(Hit, ChosenSpawnLocation + FVector(0.0f, 0.0f, 400.0f), ChosenSpawnLocation - FVector(0.0f, 0.0f, 400.0f), ECC_Visibility);
+        if (Hit.bBlockingHit)
+        {
+            ChosenSpawnLocation = Hit.ImpactPoint;
+        }
+
         SpawnLocations.Add(ChosenSpawnLocation);
-        DrawDebugSphere(GetWorld(), ChosenSpawnLocation, 20.0f, 12, FColor::Blue, false, 3.0f);
 
-        UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + Direction * MaxSpawnDistance, 4.0f, FLinearColor::Green, 3.0f);
-        DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 5.0f, 12, FColor::Red, false, 3.0f);
-        DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 5.0f, 12, FColor::Red, false, 3.0f);
+        // DrawDebugSphere(GetWorld(), ChosenSpawnLocation, 20.0f, 12, FColor::Blue, false, 3.0f);
+        // UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + Direction * MaxSpawnDistance, 4.0f, FLinearColor::Green, 3.0f);
+        // DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 5.0f, 12, FColor::Red, false, 3.0f);
+        // DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 5.0f, 12, FColor::Red, false, 3.0f);
     }
-
-    // UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + RightOfSpread * MaxSpawnDistance, 4.0f, FLinearColor::Green, 3.0f);
-
-
-
-    // const FVector LeftOfSpread = Forward.RotateAngleAxis(-SpawnSpread / 2.0f, FVector::UpVector);
-    // UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + LeftOfSpread * MaxSpawnDistance, 4.0f, FLinearColor::Gray, 3.0f);
-
-    // DrawDebugSphere(GetWorld(), Location + LeftOfSpread * MinSpawnDistance, 15.0f, 12, FColor::Red, false, 3.0f);
-    // DrawDebugSphere(GetWorld(), Location + LeftOfSpread * MaxSpawnDistance, 15.0f, 12, FColor::Red, false, 3.0f);
 
     return SpawnLocations;
 }
