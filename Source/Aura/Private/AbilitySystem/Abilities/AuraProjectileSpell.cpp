@@ -2,6 +2,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayEffect.h" 
 
 #include "AuraGameplayTags.h"
 #include "Actor/AuraProjectile.h"
