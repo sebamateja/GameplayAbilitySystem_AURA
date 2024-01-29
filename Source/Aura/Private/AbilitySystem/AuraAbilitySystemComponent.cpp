@@ -34,6 +34,8 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
         }
         //GiveAbilityAndActivateOnce(AbilitySpec); // tu AbilitySpec nie może być const
     }
+    bStartupAbilitiesGiven = true;
+    AbilitiesGivenDelegate.Broadcast(this);
 }
 
 void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)

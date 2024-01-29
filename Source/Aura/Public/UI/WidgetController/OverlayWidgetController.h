@@ -7,6 +7,7 @@
 #include "AttributeSet.h"
 #include "OverlayWidgetController.generated.h"
 
+class UAuraAbilitySystemComponent;
 struct FOnAttributeChangeData;
 class UAuraUserWidget;
 class UAbilityInfo;
@@ -70,6 +71,8 @@ protected:
 	TObjectPtr<UAbilityInfo> AbilityInfo;
 
 	void BindToAttributeValueChangeDelegate(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate);
+
+	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC);
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
