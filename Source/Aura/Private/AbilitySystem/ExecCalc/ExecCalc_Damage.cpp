@@ -8,6 +8,8 @@
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
+#include "Interaction/CombatInterface.h"
+
 struct AuraDamageStatics
 {
     // Target

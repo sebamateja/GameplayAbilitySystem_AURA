@@ -9,6 +9,7 @@
 
 struct FOnAttributeChangeData;
 class UAuraUserWidget;
+class UAbilityInfo;
 
 USTRUCT(BlueprintType)
 struct FUIWidgetRow : public FTableRowBase
@@ -62,8 +63,11 @@ public:
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom|Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom|Widget Data")
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 
 	void BindToAttributeValueChangeDelegate(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate);
 
