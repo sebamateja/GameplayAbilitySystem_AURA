@@ -21,6 +21,7 @@ void UAuraAbilitySystemComponent::Client_EffectApplied_Implementation(UAbilitySy
     EffectAssetTags.Broadcast(TagContainer);
 }
 
+// This is only called on server
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
 {
     // FGameplayAbilitySpec has TagContainer specifically for using it in runtime
@@ -31,9 +32,8 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
         if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
         {
             AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
-            GiveAbility(AbilitySpec); // tu AbilitySpec może być const
+            GiveAbility(AbilitySpec);
         }
-        //GiveAbilityAndActivateOnce(AbilitySpec); // tu AbilitySpec nie może być const
     }
     bStartupAbilitiesGiven = true;
     AbilitiesGivenDelegate.Broadcast(this);
@@ -48,6 +48,17 @@ void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate
         {
             UE_LOG(LogAura, Error, TEXT("Failed to execute delegate in &hs"), __FUNCTION__);
         }
+    }
+}
+
+void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+    Super::OnRep_ActivateAbilities();
+
+    if (!bStartupAbilitiesGiven)
+    {
+        bStartupAbilitiesGiven = true;
+        AbilitiesGivenDelegate.Broadcast(this);
     }
 }
 

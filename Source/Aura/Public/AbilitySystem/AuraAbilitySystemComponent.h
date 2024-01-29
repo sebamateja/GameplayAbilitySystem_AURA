@@ -22,7 +22,7 @@ public:
 	bool bStartupAbilitiesGiven = false;
 
 	void ForEachAbility(const FForEachAbility& Delegate);
-	
+
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 
@@ -30,6 +30,8 @@ public:
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
 protected:
+	virtual void OnRep_ActivateAbilities() override;
+
 	// Client RPC are designed to be called on the server and executed on the client
 	// If owning client is the server it will be only called on server
 	UFUNCTION(Client, Reliable)
