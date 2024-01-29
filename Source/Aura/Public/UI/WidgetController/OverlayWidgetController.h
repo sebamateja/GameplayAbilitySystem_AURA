@@ -11,6 +11,7 @@ class UAuraAbilitySystemComponent;
 struct FOnAttributeChangeData;
 class UAuraUserWidget;
 class UAbilityInfo;
+struct FAuraAbilityInfo;
 
 USTRUCT(BlueprintType)
 struct FUIWidgetRow : public FTableRowBase
@@ -32,6 +33,7 @@ struct FUIWidgetRow : public FTableRowBase
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, Info);
 
 // Blueprintable - blueprint can be created from it
 // BlueprintType - this can be used in blueprint graphs
@@ -62,6 +64,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Abilities")
+	FAbilityInfoSignature AbilityInfoDelegate;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom|Widget Data")

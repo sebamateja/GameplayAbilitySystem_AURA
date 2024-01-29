@@ -76,8 +76,14 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC)
 {
-    // TODO: Get information about all given abilities, look up their AbilityInfo, and broadcast it to widgets.
     if (!AuraASC->bStartupAbilitiesGiven) return;
 
-    
+    FForEachAbility BroadcastDelegate;
+    BroadcastDelegate.BindLambda([this, AuraASC](const FGameplayAbilitySpec& AbilitySpec){
+        FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AuraASC->GetAbilityTagFromSpec(AbilitySpec));
+        Info.InputTag = AuraASC->GetInputTagFromSpec(AbilitySpec);
+        AbilityInfoDelegate.Broadcast(Info);
+    });
+
+    AuraASC->ForEachAbility(BroadcastDelegate);
 }
