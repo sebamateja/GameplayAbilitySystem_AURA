@@ -1,6 +1,8 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 
 #include "AuraGameplayTags.h"
+#include "Player/AuraPlayerController.h"
+
 #include "AbilitySystemBlueprintLibrary.h"
 
 #include "Net/UnrealNetwork.h"
