@@ -1,6 +1,9 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
+
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+
+#include "Player/AuraPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -29,8 +32,10 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
     // No need to call Super::BindCallbacksToDependencies() because it is empty
 
-    const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
+    AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+    AuraPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
 
+    const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
     // ------------------------------------------------------------------------------
     // Vital Attributes
     // ------------------------------------------------------------------------------
@@ -61,7 +66,6 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
                 {
                     // const FString Msg = FString::Printf(TEXT("OverlayWidgetController::GE Tag: %s"), *Tag.ToString()); // Tag.GetTagName()
                     // GEngine->AddOnScreenDebugMessage(-1, 8.0f, FColor::Blue, Msg);
-
                     FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
                     if (Tag.MatchesTag(MessageTag))
                     {
@@ -86,4 +90,28 @@ void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemCo
     });
 
     AuraASC->ForEachAbility(BroadcastDelegate);
+}
+
+void UOverlayWidgetController::OnXPChanged(int32 NewXP) const
+{
+    const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+    const ULevelUpInfo* LevelUpInfo = AuraPlayerState->LevelUpInfo;
+
+    checkf(LevelUpInfo, TEXT("Unable to find LevelUpInfo. Please fill out AuraPlayerState blueprint"));
+
+    const int32 Level = LevelUpInfo->FindLevelForXP(NewXP);
+    const int32 MaxLevel = LevelUpInfo->LevelUpInformation.Num();
+
+    if (Level <= MaxLevel && Level > 0)
+    {
+        const int32 LevelUpRequirement = LevelUpInfo->LevelUpInformation[Level].LevelUpRequirement;
+        const int32 PreviousLevelUpRequirement = LevelUpInfo->LevelUpInformation[Level - 1].LevelUpRequirement;
+
+        const int32 DeltaLevelRequirement = LevelUpRequirement - PreviousLevelUpRequirement;
+        const int32 XPForThisLevel = NewXP - PreviousLevelUpRequirement;
+
+        const float XPBarPercent = static_cast<float>(XPForThisLevel) / static_cast<float>(DeltaLevelRequirement);
+
+        OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
+    }
 }

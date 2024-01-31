@@ -47,26 +47,29 @@ public:
 	virtual void BindCallbacksToDependencies() override;
 
 	// <---- Health begin
-	UPROPERTY(BlueprintAssignable, Category="GAS|Attribute")
+	UPROPERTY(BlueprintAssignable, Category="Custom|GAS|Attribute")
 	FOnAttributeChangedSignature OnHealthChanged;
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Attribute")
+	UPROPERTY(BlueprintAssignable, Category="Custom|GAS|Attribute")
 	FOnAttributeChangedSignature OnMaxHealthChanged;
 	// <---- Health end
 
 	// <---- Mana begin
-	UPROPERTY(BlueprintAssignable, Category="GAS|Attribute")
+	UPROPERTY(BlueprintAssignable, Category="Custom|GAS|Attribute")
 	FOnAttributeChangedSignature OnManaChanged;
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Attribute")
+	UPROPERTY(BlueprintAssignable, Category="Custom|GAS|Attribute")
 	FOnAttributeChangedSignature OnMaxManaChanged;
 	// <---- Mana end
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
+	UPROPERTY(BlueprintAssignable, Category="Custom|GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Abilities")
+	UPROPERTY(BlueprintAssignable, Category="Custom|GAS|Abilities")
 	FAbilityInfoSignature AbilityInfoDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="Custom|GAS|XP")
+	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom|Widget Data")
@@ -78,6 +81,8 @@ protected:
 	void BindToAttributeValueChangeDelegate(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate);
 
 	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC);
+
+	void OnXPChanged(int32 NewXP) const;
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
