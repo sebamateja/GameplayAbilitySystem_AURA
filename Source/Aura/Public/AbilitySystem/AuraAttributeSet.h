@@ -178,13 +178,17 @@ public:
 
 	/**
 	 * META ATTRIBUTES
-	 * - IncomingDamage
+	 * - IncomingDamage, IncomingXP
 	 */
 	// Meta attributes does not need to be replicated. We set them on the server, and on server we process data
 	// and then change any replicated attributes based on those calculations
 	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingXP);
 
 
 

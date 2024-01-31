@@ -1,5 +1,6 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 
+#include "Aura/AuraLogChannels.h"
 #include "AuraGameplayTags.h"
 #include "Player/AuraPlayerController.h"
 
@@ -119,7 +120,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
         // UE_LOG(LogTemp, Warning, TEXT("Health from GetHealth(): %f"), GetHealth());
         // UE_LOG(LogTemp, Warning, TEXT("Magnitude: %f"), Data.EvaluatedData.Magnitude);
         SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-        UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
+        // UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
     }
     if (Data.EvaluatedData.Attribute == GetManaAttribute())
     {
@@ -154,6 +155,12 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
             const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
             ShowFloatingText(Props, LocalIncomingDamage, bBlock, bCriticalHit);
         }
+    }
+    if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+    {
+        const float LocalIncomingXP = GetIncomingXP();
+        SetIncomingXP(0.0f);
+        UE_LOG(LogAura, Log, TEXT("Incoming XP: %f"), LocalIncomingXP);
     }
 }
 
