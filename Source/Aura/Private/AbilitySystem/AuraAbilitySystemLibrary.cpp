@@ -78,9 +78,9 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
     }
 
     int32 Level = 1;
-    if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor()))
+    if (ASC->GetAvatarActor()->Implements<UCombatInterface>())
     {
-        Level = CombatInterface->GetPlayerLevel();
+        Level = ICombatInterface::Execute_GetPlayerLevel(ASC->GetAvatarActor());
     }
 
     const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
