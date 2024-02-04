@@ -4,6 +4,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "NiagaraComponent.h"
 
 #include "AbilitySystemComponent.h"
 
@@ -16,6 +17,20 @@
 
 AAuraCharacter::AAuraCharacter()
 {
+    SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+    SpringArm->SetupAttachment(GetCapsuleComponent());
+    SpringArm->TargetArmLength = 800.0f;
+    SpringArm->bUsePawnControlRotation = false;
+    SpringArm->bDoCollisionTest = false;
+
+    Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+    Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+    Camera->bUsePawnControlRotation = false;
+
+    LevelUpNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUpNiagaraComponent"));
+    LevelUpNiagaraComponent->SetupAttachment(GetRootComponent());
+    LevelUpNiagaraComponent->bAutoActivate = false;
+
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
     GetCharacterMovement()->bConstrainToPlane = true;
@@ -24,15 +39,6 @@ AAuraCharacter::AAuraCharacter()
     bUseControllerRotationPitch = false;
     bUseControllerRotationRoll = false;
     bUseControllerRotationYaw = false;
-
-    SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-    SpringArm->SetupAttachment(GetCapsuleComponent());
-    SpringArm->TargetArmLength = 800.0f;
-    SpringArm->bUsePawnControlRotation = false;
-
-    Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-    Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
-    Camera->bUsePawnControlRotation = false;
 
     CharacterClass = ECharacterClass::Elementalist;
 }
@@ -100,9 +106,22 @@ int32 AAuraCharacter::FindLevelForXP_Implementation(int32 InXP) const
     return AuraPlayerState->LevelUpInfo->FindLevelForXP(InXP);
 }
 
+// Only called on server
 void AAuraCharacter::LevelUp_Implementation()
 {
+    MulticastLevelUpParticles();
+}
 
+void AAuraCharacter::MulticastLevelUpParticles_Implementation() const
+{
+    if (IsValid(LevelUpNiagaraComponent))
+    {
+        const FVector CameraLocation = Camera->GetComponentLocation();
+        const FVector NiagaraSystemLocation = LevelUpNiagaraComponent->GetComponentLocation();
+        const FRotator ToCameraRotation = (CameraLocation - NiagaraSystemLocation).Rotation();
+        LevelUpNiagaraComponent->SetWorldRotation(ToCameraRotation);
+        LevelUpNiagaraComponent->Activate(true);
+    }
 }
 
 int32 AAuraCharacter::GetAttributePointsReward_Implementation(int32 Level) const
