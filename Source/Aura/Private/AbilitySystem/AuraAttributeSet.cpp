@@ -107,6 +107,23 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
     }
 }
 
+void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+    Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+    // To fill up Mana and Health when leveling-up
+    if (Attribute == GetMaxHealthAttribute() && bTopOffHealth)
+    {
+        SetHealth(GetMaxHealth());
+        bTopOffHealth = false;
+    }
+    if (Attribute == GetMaxManaAttribute() && bTopOffMana)
+    {
+        SetMana(GetMaxMana());
+        bTopOffMana = false;
+    }
+}
+
 // It is executed after a GameplayEffect changes an attribute
 // Happens only on the server
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -183,8 +200,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
                 IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
                 IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
 
-                SetHealth(GetMaxHealth());
-                SetMana(GetMaxMana());
+                bTopOffHealth = true;
+                bTopOffMana = true;
 
                 IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
             }
