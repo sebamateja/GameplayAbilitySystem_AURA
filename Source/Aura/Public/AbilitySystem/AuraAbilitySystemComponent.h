@@ -30,6 +30,11 @@ public:
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);
+
 protected:
 	virtual void OnRep_ActivateAbilities() override;
 
