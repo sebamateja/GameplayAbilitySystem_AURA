@@ -28,3 +28,8 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 		}
 	);
 }
+
+void USpellMenuWidgetController::SelectAbility(UAuraUserWidget* AbilityButton)
+{
+    AbilitySelectedDelegate.Broadcast(AbilityButton);
+}
