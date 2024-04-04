@@ -146,14 +146,47 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatuses(int32 Level)
             AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
             GiveAbility(AbilitySpec);
             MarkAbilitySpecDirty(AbilitySpec);
-            ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible);
+            ClientUpdateAbilityStatus(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible, AbilitySpec.Level);
         }
     }
 }
 
-void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel)
 {
-    AbilityStatusChanged.Broadcast(AbilityTag, StatusTag);
+    AbilityStatusChanged.Broadcast(AbilityTag, StatusTag, AbilityLevel);
+}
+
+// Status is managed in dynamic ability tags
+void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGameplayTag& AbilityTag)
+{
+    if (FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
+    {
+        if (GetAvatarActor()->Implements<UPlayerInterface>())
+        {
+            IPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
+        }
+
+        const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+
+        FGameplayTag Status = GetStatusFromSpec(*AbilitySpec);
+        if (Status.MatchesTagExact(GameplayTags.Abilities_Status_Eligible))
+        {
+            AbilitySpec->DynamicAbilityTags.RemoveTag(GameplayTags.Abilities_Status_Eligible);
+            AbilitySpec->DynamicAbilityTags.AddTag(GameplayTags.Abilities_Status_Unlocked);
+            Status = GameplayTags.Abilities_Status_Unlocked;
+        }
+        else if (Status.MatchesTagExact(GameplayTags.Abilities_Status_Equipped) || Status.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked))
+        {
+            // Two ways of leveling up the ability
+            // 1. take the ability spec and simply take its level and use += to increase it
+            //   It results in changing its level without canceling an ability if its active
+            // 2. remove the ability and give it back
+            //   It results in canceling the ability on level up if its currently active
+            AbilitySpec->Level += 1;
+        }
+        ClientUpdateAbilityStatus(AbilityTag, Status, AbilitySpec->Level);
+        MarkAbilitySpecDirty(*AbilitySpec);
+    }
 }
 
 void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)

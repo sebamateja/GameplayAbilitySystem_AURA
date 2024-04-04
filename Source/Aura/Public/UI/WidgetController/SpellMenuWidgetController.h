@@ -39,6 +39,9 @@ public:
     void SelectAbility(UAuraUserWidget* AbilityButton, const FGameplayTag& AbilityTag);
 	/** Selecting Ability Button ends*/
 
+	UFUNCTION(BlueprintCallable, Category = "GAS|Spells Menu")
+	void SpendPointButtonPressed();
+
 private:
 
 	static void ShouldEnableButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpendPointsButton, bool& bShouldEnableEquipButton);
