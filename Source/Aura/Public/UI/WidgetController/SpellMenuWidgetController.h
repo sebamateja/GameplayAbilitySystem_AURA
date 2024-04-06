@@ -37,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Spells Menu")
     void SelectAbility(UAuraUserWidget* AbilityButton, const FGameplayTag& AbilityTag);
+
+	UFUNCTION(BlueprintCallable, Category = "GAS|Spells Menu")
+    void DeselectAbility();
 	/** Selecting Ability Button ends*/
 
 	UFUNCTION(BlueprintCallable, Category = "GAS|Spells Menu")
