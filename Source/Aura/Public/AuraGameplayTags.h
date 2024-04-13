@@ -58,7 +58,7 @@ public:
 	FGameplayTag Debuff_Burn;
 	FGameplayTag Debuff_Stun;
 	FGameplayTag Debuff_Arcane;
-	FGameplayTag Debuff_Physical;
+	FGameplayTag Debuff_Bleeding;
 
 	FGameplayTag Debuff_Chance;
 	FGameplayTag Debuff_Damage;
