@@ -54,7 +54,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) //means that we dont have to mark this as virtual
 	UAnimMontage* GetHitReactMontage();
 
-	virtual void Die() = 0;
+	virtual void Die(const FVector& DeathImpulse) = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool IsDead() const;
