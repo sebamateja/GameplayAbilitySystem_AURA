@@ -54,6 +54,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		// We only need to apply GameplayEffect on server because the result of this GE will be replicated because of attributes
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
+			DamageEffectParams.DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
 			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
 
 			UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
