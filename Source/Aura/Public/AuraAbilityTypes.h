@@ -45,6 +45,9 @@ public:
 
 	UPROPERTY()
 	float DebuffFrequency = 0.0f;
+
+	UPROPERTY()
+	float DeathImpulseMagnitude = 0.0f;
 };
 
 USTRUCT(BlueprintType)
