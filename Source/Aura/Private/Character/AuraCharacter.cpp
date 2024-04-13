@@ -68,6 +68,7 @@ void AAuraCharacter::InitAbilityActorInfo()
     Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
     AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
     AttributeSet = AuraPlayerState->GetAttributeSet();
+    OnASCRegistered.Broadcast(AbilitySystemComponent);
 
     // AuraPlayerController can and will be null for multiplayer games.
     // PlayerController is valid for clients only for locally controlled pawn

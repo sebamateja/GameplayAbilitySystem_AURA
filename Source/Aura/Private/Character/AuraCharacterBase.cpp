@@ -11,6 +11,10 @@ AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	BurnDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("BurnDebuffComponent");
+	BurnDebuffComponent->SetupAttachment(GetRootComponent());
+	BurnDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Burn;
+
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -134,6 +138,16 @@ ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
 	return CharacterClass;
 }
 
+FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
+{
+	return OnASCRegistered;
+}
+
+FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeath;
+}
+
 // It will only be called on the server
 void AAuraCharacterBase::Die()
 {
@@ -162,6 +176,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	Dissolve();
 
 	bDead = true;
+	OnDeath.Broadcast(this);
 }
 
 void AAuraCharacterBase::Dissolve()

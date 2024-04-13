@@ -2,6 +2,7 @@
 
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
 
 #include "Player/AuraPlayerState.h"
 #include "AuraGameplayTags.h"
