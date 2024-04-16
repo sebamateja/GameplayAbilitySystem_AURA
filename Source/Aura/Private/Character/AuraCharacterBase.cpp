@@ -4,8 +4,10 @@
 
 #include "AuraGameplayTags.h"
 #include "Aura/Aura.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h" 
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
