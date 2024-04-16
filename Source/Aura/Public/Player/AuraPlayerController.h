@@ -13,6 +13,7 @@ class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;
 class UDamageTextComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class AURA_API AAuraPlayerController : public APlayerController
@@ -75,6 +76,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> Spline;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;
 
 	void AutoRun();
 	/* Click to Move properties end */

@@ -12,6 +12,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
+#include "NiagaraFunctionLibrary.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -144,7 +145,6 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
                 for (const FVector& PointLoc : NavPath->PathPoints)
                 {
                     Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
-                    // DrawDebugSphere(GetWorld(), PointLoc, 8.0f, 8, FColor::Green, false, 5.0f);
                 }
                 if (NavPath->PathPoints.Num() > 0)
                 {
@@ -152,6 +152,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
                     bAutoRunning = true;
                 }
             }
+            UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CachedDestination);
         }
         FollowTime = 0.0f;
         bTargeting = false;
