@@ -109,6 +109,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Event_Montage_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Event.Montage.FireBolt"),
 		FString("Casting FireBolt from montage"));
+	GameplayTags.Event_Montage_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Event.Montage.Electrocute"),
+		FString("Casting Electrocute from montage"));
 
 	/**
 	 * For Combat Socket location

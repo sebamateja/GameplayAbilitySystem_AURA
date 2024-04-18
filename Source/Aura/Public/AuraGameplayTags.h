@@ -91,6 +91,7 @@ public:
 	FGameplayTag Cooldown_Fire_FireBolt;
 
 	FGameplayTag Event_Montage_FireBolt;
+	FGameplayTag Event_Montage_Electrocute;
 
 	FGameplayTag CombatSocket_Weapon;
 	FGameplayTag CombatSocket_RightHand;
