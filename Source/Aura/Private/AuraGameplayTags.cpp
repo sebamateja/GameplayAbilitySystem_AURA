@@ -294,4 +294,24 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_MeleeImpact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.MeleeImpact"),
 		FString("GameplayCue for MeleeImpact"));
+
+
+	/**
+	 * Player Tags
+	 */
+	GameplayTags.Player_Block_InputPressed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputPressed"),
+		FString("Block Input Pressed callback for input"));
+	GameplayTags.Player_Block_InputHeld = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputHeld"),
+		FString("Block Input Held callback for input"));
+	GameplayTags.Player_Block_InputReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputReleased"),
+		FString("Block Input Released callback for input"));
+	GameplayTags.Player_Block_CursorTrace = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.CursorTrace"),
+		FString("Block tracing under the cursor"));
+	GameplayTags.Player_Block_NiagaraClick = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.NiagaraClick"),
+		FString("Block spawning niagara click system"));
 }
