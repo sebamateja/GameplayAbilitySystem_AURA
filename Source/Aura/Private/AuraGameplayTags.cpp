@@ -294,6 +294,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_MeleeImpact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.MeleeImpact"),
 		FString("GameplayCue for MeleeImpact"));
+	GameplayTags.GameplayCue_ShockBurst = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.ShockBurst"),
+		FString("GameplayCue for ShockBurst, electrocute ability"));
 
 
 	/**

@@ -112,6 +112,7 @@ public:
 	FGameplayTag Effects_HitReact;
 
 	FGameplayTag GameplayCue_MeleeImpact;
+	FGameplayTag GameplayCue_ShockBurst;
 
 private:
 	static FAuraGameplayTags GameplayTags;
