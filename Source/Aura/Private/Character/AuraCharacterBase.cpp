@@ -150,6 +150,11 @@ FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
 	return OnDeath;
 }
 
+USkeletalMeshComponent* AAuraCharacterBase::GetWeapon_Implementation()
+{
+	return Weapon;
+}
+
 // It will only be called on the server
 void AAuraCharacterBase::Die(const FVector& DeathImpulse)
 {

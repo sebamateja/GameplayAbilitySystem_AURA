@@ -113,6 +113,7 @@ public:
 
 	FGameplayTag GameplayCue_MeleeImpact;
 	FGameplayTag GameplayCue_ShockBurst;
+	FGameplayTag GameplayCue_ShockLoop;
 
 private:
 	static FAuraGameplayTags GameplayTags;
