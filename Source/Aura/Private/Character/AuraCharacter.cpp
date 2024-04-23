@@ -43,6 +43,13 @@ AAuraCharacter::AAuraCharacter()
     CharacterClass = ECharacterClass::Elementalist;
 }
 
+void AAuraCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AAuraCharacter, InShockLoop);
+}
+
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
     Super::PossessedBy(NewController);
