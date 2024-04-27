@@ -1,9 +1,12 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 
 #include "Aura/AuraLogChannels.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AuraGameplayTags.h"
+#include "AuraAbilityTypes.h"
 #include "Player/AuraPlayerController.h"
 #include "Interaction/PlayerInterface.h"
+#include "Interaction/CombatInterface.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
 
