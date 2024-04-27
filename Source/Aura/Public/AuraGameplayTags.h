@@ -89,6 +89,7 @@ public:
 
 
 	FGameplayTag Cooldown_Fire_FireBolt;
+	FGameplayTag Cooldown_Lightning_Electrocute;
 
 	FGameplayTag Event_Montage_FireBolt;
 	FGameplayTag Event_Montage_Electrocute;
