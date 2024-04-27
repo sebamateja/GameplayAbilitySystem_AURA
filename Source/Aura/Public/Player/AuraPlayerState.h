@@ -24,7 +24,7 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	UPROPERTY(EditDefaultsOnly)
-TObjectPtr<ULevelUpInfo> LevelUpInfo;
+	TObjectPtr<ULevelUpInfo> LevelUpInfo;
 
 	FOnPlayerStatChanged OnXPChangedDelegate;
 	FOnPlayerStatChanged OnLevelChangedDelegate;

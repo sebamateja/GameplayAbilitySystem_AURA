@@ -39,4 +39,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Custom|Beam")
 	int32 MaxNumShockTargets = 5;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom|Beam")
+	float DamageDeltaTime = 0.1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom|Beam")
+	bool TargetDead = false;
 };
