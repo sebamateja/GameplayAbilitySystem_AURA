@@ -59,6 +59,13 @@ void UBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
             }
         }
     }
+    if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(MouseHitActor))
+    {
+        if (!CombatInterface->GetOnDeathDelegateRef().IsAlreadyBound(this, &UBeamSpell::PrimaryTargetDied))
+        {
+            CombatInterface->GetOnDeathDelegateRef().AddDynamic(this, &UBeamSpell::PrimaryTargetDied);
+        }
+    }
 }
 
 void UBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
@@ -75,8 +82,18 @@ void UBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets)
         850.0f,
         MouseHitActor->GetActorLocation());
 
-    // int32 NumAdditionalTargets = FMath::Min(GetAbilityLevel() - 1, MaxNumShockTargets);
-    int32 NumAdditionalTargets = 5;
+    int32 NumAdditionalTargets = FMath::Min(GetAbilityLevel() - 1, MaxNumShockTargets);
 
     UAuraAbilitySystemLibrary::GetClosestTargets(NumAdditionalTargets, OverlappingActors, OutAdditionalTargets, MouseHitActor->GetActorLocation());
+
+    for(AActor* Target : OutAdditionalTargets)
+    {
+        if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Target))
+        {
+            if (!CombatInterface->GetOnDeathDelegateRef().IsAlreadyBound(this, &UBeamSpell::AdditionalTargetDied))
+            {
+                CombatInterface->GetOnDeathDelegateRef().AddDynamic(this, &UBeamSpell::AdditionalTargetDied);
+            }
+        }
+    }    
 }

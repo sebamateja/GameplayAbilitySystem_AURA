@@ -23,6 +23,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PrimaryTargetDied(AActor* DeadActor);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void AdditionalTargetDied(AActor* DeadActor);
+
 protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Custom|Beam")
@@ -42,6 +48,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom|Beam")
 	float DamageDeltaTime = 0.1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom|Beam")
+	float MinSpellTime = 0.5;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Custom|Beam")
 	bool TargetDead = false;

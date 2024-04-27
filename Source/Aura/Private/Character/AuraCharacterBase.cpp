@@ -150,6 +150,11 @@ FOnDeath AAuraCharacterBase::GetOnDeathDelegate()
 	return OnDeath;
 }
 
+FOnDeath& AAuraCharacterBase::GetOnDeathDelegateRef()
+{
+	return OnDeath;
+}
+
 USkeletalMeshComponent* AAuraCharacterBase::GetWeapon_Implementation()
 {
 	return Weapon;
