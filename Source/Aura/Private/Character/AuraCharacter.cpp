@@ -97,6 +97,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 // To replicate blocking input on clients, because dynamic gameplay effect 
 // for debuff in AuraAttributeSet is not replicated
+// To trigger niagara system component for stun on clients
 void AAuraCharacter::OnRep_Stunned()
 {
     if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
@@ -111,13 +112,27 @@ void AAuraCharacter::OnRep_Stunned()
         if (bIsStunned)
         {
             AuraASC->AddLooseGameplayTags(BlockedTags);
+            StunDebuffComponent->Activate();
         }
         else
         {
             AuraASC->RemoveLooseGameplayTags(BlockedTags);
+            StunDebuffComponent->Deactivate();
         }
     }
+}
 
+// To trigger niagara system component for burn on clients
+void AAuraCharacter::OnRep_Burned()
+{
+    if (bIsBurned)
+    {
+        BurnDebuffComponent->Activate();
+    }
+    else
+    {
+        BurnDebuffComponent->Deactivate();
+    }
 }
 
 void AAuraCharacter::AddToXP_Implementation(int32 InXP)
