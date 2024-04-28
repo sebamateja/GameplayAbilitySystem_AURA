@@ -1,16 +1,17 @@
 #include "Character/AuraCharacter.h"
 
+#include "NiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "NiagaraComponent.h"
 
 #include "AbilitySystemComponent.h"
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
+#include "AuraGameplayTags.h"
 #include "Player/AuraPlayerState.h"
 #include "Player/AuraPlayerController.h"
 #include "UI/HUD/AuraHUD.h"
@@ -76,6 +77,7 @@ void AAuraCharacter::InitAbilityActorInfo()
     AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
     AttributeSet = AuraPlayerState->GetAttributeSet();
     OnASCRegistered.Broadcast(AbilitySystemComponent);
+    AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraCharacter::StunTagChanged);
 
     // AuraPlayerController can and will be null for multiplayer games.
     // PlayerController is valid for clients only for locally controlled pawn
@@ -91,6 +93,31 @@ void AAuraCharacter::InitAbilityActorInfo()
     }
 
     InitializeDefaultAttributes();
+}
+
+// To replicate blocking input on clients, because dynamic gameplay effect 
+// for debuff in AuraAttributeSet is not replicated
+void AAuraCharacter::OnRep_Stunned()
+{
+    if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+    {
+        const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+
+        FGameplayTagContainer BlockedTags;
+        BlockedTags.AddTag(GameplayTags.Player_Block_CursorTrace);
+        BlockedTags.AddTag(GameplayTags.Player_Block_InputHeld);
+        BlockedTags.AddTag(GameplayTags.Player_Block_InputPressed);
+        BlockedTags.AddTag(GameplayTags.Player_Block_InputReleased);
+        if (bIsStunned)
+        {
+            AuraASC->AddLooseGameplayTags(BlockedTags);
+        }
+        else
+        {
+            AuraASC->RemoveLooseGameplayTags(BlockedTags);
+        }
+    }
+
 }
 
 void AAuraCharacter::AddToXP_Implementation(int32 InXP)

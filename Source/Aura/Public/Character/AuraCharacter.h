@@ -46,6 +46,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Replicated)
 	bool InShockLoop = false;
 
+	virtual void OnRep_Stunned() override;
+
 private:
 	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<UCameraComponent> Camera;
