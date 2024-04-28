@@ -181,10 +181,14 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
         }
         else
         {
-            // We can specify a tag or a set of tags and say activate an ability if you have an ability with a specific tag
-            FGameplayTagContainer TagContainer;
-            TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-            Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+            if (Props.TargetCharacter->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsBeingShocked(Props.TargetCharacter))
+            {
+                // We can specify a tag or a set of tags and say activate an ability if you have an ability with a specific tag
+                FGameplayTagContainer TagContainer;
+                TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+                Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+            }
+
         }
         const bool bBlock = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
         const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
