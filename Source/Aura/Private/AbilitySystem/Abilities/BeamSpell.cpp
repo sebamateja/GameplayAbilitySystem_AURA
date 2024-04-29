@@ -1,5 +1,6 @@
 #include "AbilitySystem/Abilities/BeamSpell.h"
 
+#include "Interaction/CombatInterface.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 #include "GameFramework/Character.h"
