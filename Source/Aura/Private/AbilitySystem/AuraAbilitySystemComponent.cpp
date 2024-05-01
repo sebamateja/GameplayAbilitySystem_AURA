@@ -240,6 +240,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
     }
 }
 
+// Will be executed on the client when it is called from the server
 void UAuraAbilitySystemComponent::ClientEquipAbility_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& Slot, const FGameplayTag& PreviousSlot)
 {
     AbilityEquippedDelegate.Broadcast(AbilityTag, Status, Slot, PreviousSlot);
