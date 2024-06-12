@@ -241,12 +241,16 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
     return AuraAbilitySystemComponent;
 }
 
-void AAuraPlayerController::ShowMagicCircle()
+void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
     if (!IsValid(MagicCircle))
 	{
 		FVector MagicCircleLoc = CursorHit.ImpactPoint;
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass, MagicCircleLoc, FRotator::ZeroRotator);
+        if (DecalMaterial)
+        {
+            MagicCircle->MagicCircleDecal->SetMaterial(0, DecalMaterial);
+        }
 	}
 }
 
