@@ -358,6 +358,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
             AbilitySpecInputPressed(AbilitySpec);
             if (AbilitySpec.IsActive())
             {
+                // Allows us to have predictive behavior for press and release events
                 InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
             }
         }
@@ -383,8 +384,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 }
 
 // In released case we do not always want to stop the activated ability
-// in most of the cases we just want to say to the ability that it is not pressed
-// anymore
+// in most of the cases we just want to say to the ability that it is not pressed anymore
 // In Ability itself we can override method InputPressed and InputReleased to
 // do whatever we need in case of those events
 void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
