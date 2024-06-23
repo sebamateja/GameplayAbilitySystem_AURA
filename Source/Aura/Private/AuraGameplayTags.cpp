@@ -325,7 +325,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.GameplayCue_ShockLoop = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("GameplayCue.ShockLoop"),
 		FString("GameplayCue for ShockLoop, electrocute ability"));
-
+	GameplayTags.GameplayCue_ArcaneShards = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.ArcaneShards"),
+		FString("GameplayCue for ArcaneShards, shards ability"));
 
 	/**
 	 * Player Tags

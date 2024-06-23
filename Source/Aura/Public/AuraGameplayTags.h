@@ -121,6 +121,7 @@ public:
 	FGameplayTag GameplayCue_MeleeImpact;
 	FGameplayTag GameplayCue_ShockBurst;
 	FGameplayTag GameplayCue_ShockLoop;
+	FGameplayTag GameplayCue_ArcaneShards;
 
 private:
 	static FAuraGameplayTags GameplayTags;
