@@ -47,4 +47,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
 	float DeathImpulseMagnitude = 1000.0f;
+
+	/** Radial damage begins*/
+	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
+	bool bIsRadialDamage = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
+	float RadialDamageInnerRadius = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
+	float RadialDamageOuterRadius = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
+	FVector RadialDamageOrigin = FVector::ZeroVector;
+	/** Radial damage ends*/
 };
