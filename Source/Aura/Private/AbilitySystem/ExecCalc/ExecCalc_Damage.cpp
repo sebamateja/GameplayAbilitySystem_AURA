@@ -67,6 +67,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 {
     const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 
+    const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+    FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+
     TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
     TagsToCaptureDefs.Add(GameplayTags.Attributes_Secondary_Armor, DamageStatics().ArmorDef);
     TagsToCaptureDefs.Add(GameplayTags.Attributes_Secondary_BlockChance, DamageStatics().BlockChanceDef);
@@ -98,8 +101,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
     const UCharacterClassInfo* CharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
 
-    const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
-
+    
     // Gather tags from source and target
     const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
     const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
@@ -139,6 +141,27 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
         ResistanceValue = FMath::Clamp(ResistanceValue, 0.0f, 100.0f);
 
         DamageTypeValue *= (100.0f - ResistanceValue) / 100.0f;
+
+
+        // SOLUTION USED IN COURSE for RADIAL DAMAGE
+        // 1. Override TakeDamage in AuraCharacterBase
+        // 2. Create delegate OnDamageDelegate, broadcast damage received in TakeDamage
+        // 3. Bind lambda to OnDamageDelegate on the Victim here
+        // 4. Call UGameplayStatics::ApplyRadialDamageWithFalloff to cause damage (this will result in 
+        //    TakeDamage being called on the victim which will then broadcast OnDamageDelegate)
+        // 5. In Lambda, set DamageTypeValue to the damage received from the broadcast
+
+        if (UAuraAbilitySystemLibrary::IsRadialDamage(EffectContextHandle))
+        {
+            DamageTypeValue = UAuraAbilitySystemLibrary::GetRadialDamageWithFalloff(
+                    TargetAvatar,
+                    DamageTypeValue,
+                    0.f,
+                    UAuraAbilitySystemLibrary::GetRadialDamageOrigin(EffectContextHandle),
+                    UAuraAbilitySystemLibrary::GetRadialDamageInnerRadius(EffectContextHandle),
+                    UAuraAbilitySystemLibrary::GetRadialDamageOuterRadius(EffectContextHandle),
+                    1.f);
+        }
 
         Damage += DamageTypeValue;
     }
@@ -200,7 +223,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 
     // Setting custom stuff in GameplayEffectContext
-    FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
     UAuraAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
     UAuraAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCriticalHit);
 

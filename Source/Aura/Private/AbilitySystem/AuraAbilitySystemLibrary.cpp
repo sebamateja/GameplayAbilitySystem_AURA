@@ -8,6 +8,7 @@
 #include "Interaction/CombatInterface.h"
 #include "Game/AuraGameModeBase.h"
 #include "UI/WidgetController/AuraWidgetController.h"
+#include "Engine/DamageEvents.h"
 
 bool UAuraAbilitySystemLibrary::MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutWCParams, AAuraHUD*& OutAuraHUD)
 {
@@ -469,4 +470,18 @@ TArray<FVector> UAuraAbilitySystemLibrary::EvenlyRotatedVectors(const FVector& F
         Vectors.Add(Forward);
     }
     return Vectors;
+}
+
+float UAuraAbilitySystemLibrary::GetRadialDamageWithFalloff(const AActor* TargetActor, float BaseDamage, float MinimumDamage, const FVector& Origin, float DamageInnerRadius, float DamageOuterRadius, float DamageFalloff)
+{
+	if (!TargetActor) return 0.0f;
+ 
+	FRadialDamageParams RadialDamageParams;
+	RadialDamageParams.BaseDamage = BaseDamage;
+	RadialDamageParams.DamageFalloff = DamageFalloff;
+	RadialDamageParams.InnerRadius = DamageInnerRadius;
+	RadialDamageParams.OuterRadius = DamageOuterRadius;
+	RadialDamageParams.MinimumDamage = MinimumDamage;
+	float DamageScale = RadialDamageParams.GetDamageScale((Origin - TargetActor->GetActorLocation()).Length());
+	return BaseDamage * DamageScale;
 }
