@@ -52,10 +52,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
 	bool bIsRadialDamage = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom|Damage")
 	float RadialDamageInnerRadius = 0.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom|Damage")
 	float RadialDamageOuterRadius = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Custom|Damage")
