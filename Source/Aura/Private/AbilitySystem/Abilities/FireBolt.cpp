@@ -73,7 +73,7 @@ FString UFireBolt::GetDescription(int32 Level)
 
             // Description
             "<Default>Launches a bolt of fire, exploding on impact and dealing: </>"
-            "<Damage>%d</><Default> fire damage with a chance to burn</>"),
+            "<Damage>%d</><Default> fire damage with a chance to burn.</>"),
 
             Level, ManaCost, Cooldown, ScaledDamage);
     }
@@ -90,7 +90,7 @@ FString UFireBolt::GetDescription(int32 Level)
 
             // Description
             "<Default>Launches %d bolts of fire, exploding on impact and dealing: </>"
-            "<Damage>%d</><Default> fire damage with a chance to burn</>"),
+            "<Damage>%d</><Default> fire damage with a chance to burn.</>"),
 
             Level, ManaCost, Cooldown, FMath::Min(Level, MaxNumProjectiles), ScaledDamage);
     }
@@ -112,7 +112,7 @@ FString UFireBolt::GetNextLevelDescription(int32 Level)
 
         // Description
         "<Default>Launches %d bolts of fire, exploding on impact and dealing: </>"
-        "<Damage>%d</><Default> fire damage with a chance to burn</>"),
+        "<Damage>%d</><Default> fire damage with a chance to burn.</>"),
 
         Level, ManaCost, Cooldown, FMath::Min(Level, MaxNumProjectiles), ScaledDamage);
 }
