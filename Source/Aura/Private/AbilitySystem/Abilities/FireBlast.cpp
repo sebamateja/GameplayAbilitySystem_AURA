@@ -1,8 +1,34 @@
 #include "AbilitySystem/Abilities/FireBlast.h"
 
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "Actor/FireBall.h"
+
 TArray<AFireBall*> UFireBlast::SpawnFireBalls()
 {
-    return TArray<AFireBall*>();
+    TArray<AFireBall*> FireBalls;
+
+    const FVector Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
+    const FVector Location = GetAvatarActorFromActorInfo()->GetActorLocation();
+    TArray<FRotator> Rotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, 360.0f, NumFireBalls);
+
+    for (const FRotator& Rotator : Rotators)
+    {
+        FTransform SpawnTransform;
+        SpawnTransform.SetLocation(Location);
+        SpawnTransform.SetRotation(Rotator.Quaternion());
+        AFireBall* FireBall = GetWorld()->SpawnActorDeferred<AFireBall>(
+            FireBallClass, 
+            SpawnTransform, 
+            GetOwningActorFromActorInfo(),
+            CurrentActorInfo->PlayerController->GetPawn(),
+            ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+        FireBall->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+        FireBalls.Add(FireBall);
+        FireBall->FinishSpawning(SpawnTransform);
+    }
+
+    return FireBalls;
 }
 
 FString UFireBlast::GetDescription(int32 Level)
