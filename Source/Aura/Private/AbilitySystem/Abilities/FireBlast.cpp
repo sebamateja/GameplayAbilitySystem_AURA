@@ -1,5 +1,10 @@
 #include "AbilitySystem/Abilities/FireBlast.h"
 
+TArray<AFireBall*> UFireBlast::SpawnFireBalls()
+{
+    return TArray<AFireBall*>();
+}
+
 FString UFireBlast::GetDescription(int32 Level)
 {
     const int32 ScaledDamage = Damage.GetValueAtLevel(Level);
