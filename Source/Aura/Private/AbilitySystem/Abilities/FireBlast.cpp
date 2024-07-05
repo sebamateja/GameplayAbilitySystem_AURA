@@ -25,6 +25,11 @@ TArray<AFireBall*> UFireBlast::SpawnFireBalls()
 
         FireBall->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
         FireBall->ReturnToActor = GetAvatarActorFromActorInfo();
+        FireBall->SetOwner(GetAvatarActorFromActorInfo());
+
+        FireBall->ExplosionDamageParams = MakeDamageEffectParamsFromClassDefaults();
+        FireBall->ExplosionDamageParams.BaseDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+
         FireBalls.Add(FireBall);
         FireBall->FinishSpawning(SpawnTransform);
     }

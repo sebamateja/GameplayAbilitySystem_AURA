@@ -9,6 +9,7 @@
 #include "Game/AuraGameModeBase.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "Engine/DamageEvents.h"
+#include <future>
 
 bool UAuraAbilitySystemLibrary::MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutWCParams, AAuraHUD*& OutAuraHUD)
 {
@@ -484,4 +485,25 @@ float UAuraAbilitySystemLibrary::GetRadialDamageWithFalloff(const AActor* Target
 	RadialDamageParams.MinimumDamage = MinimumDamage;
 	float DamageScale = RadialDamageParams.GetDamageScale((Origin - TargetActor->GetActorLocation()).Length());
 	return BaseDamage * DamageScale;
+}
+
+void UAuraAbilitySystemLibrary::SetIsRadialDamageEffectParams(FDamageEffectParams& DamageEffectParams, bool bIsRadial, float InnerRadius, float OuterRadius, FVector Origin)
+{
+    DamageEffectParams.bIsRadialDamage = bIsRadial;
+    DamageEffectParams.RadialDamageInnerRadius = InnerRadius;
+    DamageEffectParams.RadialDamageOuterRadius = OuterRadius;
+    DamageEffectParams.RadialDamageOrigin = Origin;
+}
+
+void UAuraAbilitySystemLibrary::SetDeathImpulseDirection(FDamageEffectParams& DamageEffectParams, FVector ImpulseDirection, float Magnitude)
+{
+    ImpulseDirection.Normalize();
+    if (Magnitude == 0.0f)
+    {
+        DamageEffectParams.DeathImpulse = ImpulseDirection * DamageEffectParams.DeathImpulseMagnitude;
+    }
+    else
+    {
+        DamageEffectParams.DeathImpulse = ImpulseDirection * Magnitude;
+    }
 }

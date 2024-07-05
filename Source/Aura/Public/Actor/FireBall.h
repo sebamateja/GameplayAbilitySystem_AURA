@@ -22,6 +22,9 @@ public:
     UPROPERTY(BlueprintReadWrite)
     TArray<AActor*> IgnoreList;
 
+	UPROPERTY(BlueprintReadWrite)
+	FDamageEffectParams ExplosionDamageParams;
+
 protected:
 	virtual void BeginPlay() override;
 
