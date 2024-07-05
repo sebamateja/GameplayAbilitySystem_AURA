@@ -16,6 +16,12 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AActor> ReturnToActor;
 
+	UFUNCTION(BlueprintCallable)
+    void EmptyIgnoreList();
+     
+    UPROPERTY(BlueprintReadWrite)
+    TArray<AActor*> IgnoreList;
+
 protected:
 	virtual void BeginPlay() override;
 
